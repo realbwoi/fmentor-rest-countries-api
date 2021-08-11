@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import Search from './Search';
+import Dropdown from './Dropdown';
+import Card from './Card';
 
 export default function Home() {
   const [ allCountryData, setAllCountryData ] = useState([]);
@@ -7,17 +10,23 @@ export default function Home() {
   useEffect(() => {
     axios
       .get("https://restcountries.eu/rest/v2/all")
-      .then(res => {setAllCountryData(res.data)})
+      .then(res => {
+        console.log(res.data);
+        setAllCountryData(res.data);
+      })
   }, [])
 
   return (
     <div>
-      This is the Home page!
+      <div>
+        <Search />
+        <Dropdown />
+      </div>
       {allCountryData.map((country, idx) => {
         return (
-          <div key={idx}>
-            {country.name}
-          </div>
+          <>
+            <Card key={idx} country={country} />
+          </>
         )
       })}
     </div>

@@ -1,8 +1,8 @@
 import { BrowserRouter as Router, Switch, Route} from "react-router-dom";
 import './App.css';
 import Header from './components/Header';
-import Home from './components/Home';
-import Country from './components/Country'
+import Home from './components/home/Home';
+import Country from './components/country/Country';
 
 function App() {
   return (
