@@ -1,20 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import Search from './Search';
 import Dropdown from './Dropdown';
 import Card from './Card';
 
-export default function Home() {
-  const [ allCountryData, setAllCountryData ] = useState([]);
-
-  useEffect(() => {
-    axios
-      .get("https://restcountries.eu/rest/v2/all")
-      .then(res => {
-        console.log(res.data);
-        setAllCountryData(res.data);
-      })
-  }, [])
+export default function Home({allCountries}) {
 
   return (
     <div>
@@ -22,11 +10,9 @@ export default function Home() {
         <Search />
         <Dropdown />
       </div>
-      {allCountryData.map((country, idx) => {
+      {allCountries.map((country, idx) => {
         return (
-          <>
-            <Card key={idx} country={country} />
-          </>
+          <Card key={idx} {...country} />
         )
       })}
     </div>
