@@ -1,42 +1,89 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation } from "react-router-dom";
-import { useParams } from 'react-router';
-import { Link } from 'react-router-dom'
-import axios from 'axios';
+import axios from "axios";
 
 export default function Country() {
+  // const [borderResults, setBorderResults] = useState([]);
   const location = useLocation();
-  const countryData = location.state;
+  console.log(location.state);
+  const {
+    flags: ...location.state.flags ? flags : undefined,
+    name: { ...name },
+    borders: [...borders],
+    region,
+    languages: { ...languages },
+    capital,
+    tld: [...tld],
+    population,
+    currencies: { ...currencies },
+    subregion
+  } = { ...location.state };
+
+  // const name = {
+  //   common: "Hello"
+  // }
+
+  const getBorderCountries = async () => {
+    let borderData = [];
+    borders.forEach(border => {
+      borderData.push(`https://restcountries.com/v3.1/alpha/${border}`);
+    })
+
+    console.log(borderData);
+
+    // return Promise.all(borders.map(async borderCountry => {
+    //   return await axios.get(`https://restcountries.com/v3.1/alpha/${borderCountry}`).data;
+    // }))
+  }
+
+  // useEffect(() => {
+  //   console.log(getBorderCountries);
+  //   // getBorderCountries()
+  //   //   .then(res => {
+  //   //     setBorderResults([...res])
+  //   //   })
+  // })
 
   return (
     <div>
-      {console.log(location)}
-      <img
-        src={countryData.flags.svg}
-        alt={`Country flag of ${countryData.name.official}`}
-      />
+      <img src={flags.svg} alt={`Country flag of ${name.official}`} />
       <div>
-        <h2>{countryData.name.official}</h2>
+        <h2>{name.official}</h2>
         <ul>
-          <li>Native Name: {countryData.name.nativeName}</li>
-          <li>Population: {countryData.population.toLocaleString("en-US")}</li>
-          <li>Region: {countryData.region}</li>
-          <li>Sub Region: {countryData.subregion}</li>
-          <li>Capital: {countryData.capital}</li>
+          <li>
+            Native Name:{" "}
+            {
+              Object.keys(name.nativeName).map(
+                (names) => name.nativeName[names]
+              )[0]["common"]
+            }
+          </li>
+          <li>Population: {population.toLocaleString("en-US")}</li>
+          <li>Region: {region}</li>
+          <li>Sub Region: {subregion}</li>
+          <li>Capital: {capital}</li>
         </ul>
         <ul>
-          <li>Top Level Domain: {countryData.tld[0]}</li>
+          <li>Top Level Domain: {tld[0]}</li>
           <li>
             Currencies:{" "}
-            {countryData.currencies}
+            {Object.keys(currencies)
+              .map((currency) => currencies[currency])
+              .map((currencyType) => currencyType.name)
+              .join(", ")}
           </li>
           <li>
             Languages:{" "}
-            {countryData.languages}
+            {Object.keys(languages)
+              .map((language) => languages[language])
+              .join(", ")}
           </li>
         </ul>
         <div>
-          <p>Border Countries:</p>
+          {
+            getBorderCountries()
+            /* <p>Border Countries: {borders.map(async border => await axios.get(`https://restcountries.com/v3.1/alpha/${border}`).data)}</p> */
+          }
         </div>
       </div>
     </div>

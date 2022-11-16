@@ -12,7 +12,7 @@ export default function Home({allCountries}) {
       </div>
       {allCountries.map((country, idx) => {
         return (
-          <Card key={idx} {...country} />
+          <Card key={idx} country={{...country}} />
         )
       })}
     </div>

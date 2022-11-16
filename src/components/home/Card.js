@@ -2,31 +2,19 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 export default function Card({
-  region,
+  country
+}) {
+  const {region,
   name: { ...name },
   flags: { ...flags },
-  currencies,
-  languages,
   population,
-  capital,
-  subregion,
-  tld,
-}) {
+  capital} = {...country};
+
   return (
     <Link
       to={{
         pathname: `/${region}/${name.common}`,
-        state: {
-          region: region,
-          name: { ...name },
-          flags: { ...flags },
-          population: population,
-          capital: capital,
-          subregion: subregion,
-          tld: tld,
-          currencies: { ...currencies },
-          languages: { ...languages },
-        },
+        state: {...country},
       }}
     >
       <img src={flags.svg} alt={`Country flag of ${name.common}`} />
