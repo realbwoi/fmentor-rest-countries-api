@@ -10,9 +10,9 @@ export default function App() {
   const [allCountries, setAllCountries] = useState([]);
 
   // Get all country data
-  const getAllCountryData = async () => {
+  const getAllCountryData = () => {
     try {
-      return await axios.get("https://restcountries.com/v3.1/all");
+      return axios.get("https://restcountries.com/v2/all");
     } catch (error) {
       console.log(error);
       return [];
@@ -32,9 +32,13 @@ export default function App() {
         <Route exact path="/">
           <Home allCountries={allCountries} />
         </Route>
-        <Route path="/:region/:country">
-          <Country />
-        </Route>
+        <Route path="/:region/:country" render={(props) => {
+          return (
+            <Country country={{...allCountries.filter(country => {
+              return country.name === props.match.params.country
+            })[0]}} />
+          )
+        }} />
       </Switch>
     </Router>
   );

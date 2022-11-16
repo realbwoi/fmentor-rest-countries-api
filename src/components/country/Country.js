@@ -1,90 +1,73 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from "react-router-dom";
+import { useLocation } from 'react-router-dom';
 import axios from "axios";
 
-export default function Country() {
-  // const [borderResults, setBorderResults] = useState([]);
+export default function Country({country}) {
+  const [borderData, setBorderData] = useState([]);
+  const [countryData, setCountryData] = useState();
   const location = useLocation();
-  console.log(location.state);
-  const {
-    flags: ...location.state.flags ? flags : undefined,
-    name: { ...name },
-    borders: [...borders],
-    region,
-    languages: { ...languages },
-    capital,
-    tld: [...tld],
-    population,
-    currencies: { ...currencies },
-    subregion
-  } = { ...location.state };
 
-  // const name = {
-  //   common: "Hello"
-  // }
+  useEffect(() => {
+    const fetchCountry = () => {
+      if (!country.length) {
+        axios
+          .get(
+            `https://restcountries.com/v2/name/${
+              location.pathname.split("/")[2]
+            }`
+          )
+          .then((result) => {
+            setCountryData(result.data[0]);
+          });
+      } else {
+        setCountryData({ ...country });
+      }
+    };
 
-  const getBorderCountries = async () => {
-    let borderData = [];
-    borders.forEach(border => {
-      borderData.push(`https://restcountries.com/v3.1/alpha/${border}`);
-    })
+    async function getBorderData() {
+      if (countryData === undefined) return;
+      const borderNames = await Promise.all(
+        countryData.borders.map((border) => {
+          return axios.get(
+            `https://restcountries.com/v2/alpha?codes=${border}`
+          );
+        })
+      );
 
-    console.log(borderData);
+      setBorderData(borderNames.map(({ data }) => data[0].name));
+    }
 
-    // return Promise.all(borders.map(async borderCountry => {
-    //   return await axios.get(`https://restcountries.com/v3.1/alpha/${borderCountry}`).data;
-    // }))
-  }
+    fetchCountry();
+    getBorderData();
+  }, []);
 
-  // useEffect(() => {
-  //   console.log(getBorderCountries);
-  //   // getBorderCountries()
-  //   //   .then(res => {
-  //   //     setBorderResults([...res])
-  //   //   })
-  // })
-
-  return (
+  return !countryData ? (<p>Loading...</p>) : (
     <div>
-      <img src={flags.svg} alt={`Country flag of ${name.official}`} />
+      <img
+        src={countryData.flags.svg}
+        alt={`Country flag of ${countryData.name}`}
+      />
       <div>
-        <h2>{name.official}</h2>
+        <h2>{countryData.name}</h2>
         <ul>
-          <li>
-            Native Name:{" "}
-            {
-              Object.keys(name.nativeName).map(
-                (names) => name.nativeName[names]
-              )[0]["common"]
-            }
-          </li>
-          <li>Population: {population.toLocaleString("en-US")}</li>
-          <li>Region: {region}</li>
-          <li>Sub Region: {subregion}</li>
-          <li>Capital: {capital}</li>
+          <li>Native Name: {countryData.nativeName}</li>
+          <li>Population: {countryData.population.toLocaleString("en-US")}</li>
+          <li>Region: {countryData.region}</li>
+          <li>Sub Region: {countryData.subregion}</li>
+          <li>Capital: {countryData.capital}</li>
         </ul>
         <ul>
-          <li>Top Level Domain: {tld[0]}</li>
+          <li>Top Level Domain: {countryData.topLevelDomain[0]}</li>
           <li>
             Currencies:{" "}
-            {Object.keys(currencies)
-              .map((currency) => currencies[currency])
-              .map((currencyType) => currencyType.name)
-              .join(", ")}
+            {countryData.currencies.map((currency) => currency.name).join(", ")}
           </li>
           <li>
             Languages:{" "}
-            {Object.keys(languages)
-              .map((language) => languages[language])
-              .join(", ")}
+            {countryData.languages.map((language) => language.name).join(", ")}
           </li>
         </ul>
-        <div>
-          {
-            getBorderCountries()
-            /* <p>Border Countries: {borders.map(async border => await axios.get(`https://restcountries.com/v3.1/alpha/${border}`).data)}</p> */
-          }
-        </div>
+        <div>Border Countries: {borderData.join(", ")}</div>
       </div>
     </div>
   );
