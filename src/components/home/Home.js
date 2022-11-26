@@ -3,7 +3,6 @@ import Dropdown from './Dropdown';
 import Card from './Card';
 
 export default function Home({allCountries}) {
-
   return (
     <div>
       <div>

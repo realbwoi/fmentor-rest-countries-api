@@ -9,20 +9,16 @@ import Country from './components/country/Country';
 export default function App() {
   const [allCountries, setAllCountries] = useState([]);
 
-  // Get all country data
-  const getAllCountryData = () => {
-    try {
-      return axios.get("https://restcountries.com/v2/all");
-    } catch (error) {
-      console.log(error);
-      return [];
-    }
-  };
-
   useEffect(() => {
-    getAllCountryData().then((result) => {
-      setAllCountries([...result.data]);
-    });
+    if (localStorage.getItem('allCountries') == null) {
+      axios.get("https://restcountries.com/v2/all")
+        .then(result => {
+          setAllCountries(result.data);
+          localStorage.setItem("allCountries", JSON.stringify(result.data));
+        });
+    } else {
+      setAllCountries(JSON.parse(localStorage.getItem('allCountries')));
+    }
   }, []);
 
   return (
@@ -34,7 +30,7 @@ export default function App() {
         </Route>
         <Route path="/:region/:country" render={(props) => {
           return (
-            <Country country={{...allCountries.filter(country => {
+            <Country getCountry country={{...allCountries.filter(country => {
               return country.name === props.match.params.country
             })[0]}} />
           )
