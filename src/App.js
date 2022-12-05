@@ -30,7 +30,7 @@ export default function App() {
         </Route>
         <Route path="/:region/:country" render={(props) => {
           return (
-            <Country getCountry country={{...allCountries.filter(country => {
+            <Country country={{...allCountries.filter(country => {
               return country.name === props.match.params.country
             })[0]}} />
           )
