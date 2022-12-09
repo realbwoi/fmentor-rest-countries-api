@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { BrowserRouter as Router, Switch, Route} from "react-router-dom";
-import './App.css';
+import './styles.css';
 import Header from './components/Header';
 import Home from './components/home/Home';
 import Country from './components/country/Country';
@@ -11,10 +10,14 @@ export default function App() {
 
   useEffect(() => {
     if (localStorage.getItem('allCountries') == null) {
-      axios.get("https://restcountries.com/v2/all")
-        .then(result => {
-          setAllCountries(result.data);
-          localStorage.setItem("allCountries", JSON.stringify(result.data));
+      fetch("https://restcountries.com/v2/all")
+        .then(response => response.json())
+        .then(data => {
+          setAllCountries(data);
+          localStorage.setItem("allCountries", JSON.stringify(data));
+        })
+        .catch(err => {
+          console.log(err);
         });
     } else {
       setAllCountries(JSON.parse(localStorage.getItem('allCountries')));
@@ -28,10 +31,15 @@ export default function App() {
         <Route exact path="/">
           <Home allCountries={allCountries} />
         </Route>
-        <Route path="/:region/:country" render={(props) => {
+        <Route path="/:region" render={(props) => {
+          return <Home allCountries={allCountries.filter(country => {
+            return country.region === props.match.params.region
+          })} />
+        }} />
+        <Route path="/:region/:alpha3Code" render={(props) => {
           return (
             <Country country={{...allCountries.filter(country => {
-              return country.name === props.match.params.country
+              return country.alpha3Code === props.match.params.alpha3Code;
             })[0]}} />
           )
         }} />

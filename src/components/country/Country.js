@@ -1,16 +1,36 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from "react-router-dom";
 
 export default function Country({country}) {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [countryData, setCountryData] = useState();
-  const [borderData, setBorderData] = useState([]);
+  const [borderData, setBorderData] = useState();
+
+  const fetchBorderData = () => {
+    if (Object.keys(country).length === 0) {
+      return;
+    } else {
+      fetch(`https://restcountries.com/v2/alpha?codes=${country.borders.join(",")}`)
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+          setBorderData(data);
+        })
+        .catch(err => {
+          console.log(err);
+        })
+    }
+    // console.log(`Border info: ${JSON.stringify(borderData)}`);
+  }
 
   const setCountryDataFromProps = () => {
-    console.log(countryData);
-    if (Object.keys(country).length === 0) return <><p>Loading...</p></>
+    // console.log(countryData);
+    if (Object.keys(country).length === 0) {
+      return <><p>Loading...</p></>;
+    }
     setCountryData(country);
-    setIsLoading((prevState) => !prevState);
-    console.log("PROPS: " + JSON.stringify(country));
+    fetchBorderData();
+    console.log("DATA LOADED");
   }
 
   useEffect(() => {
@@ -51,7 +71,22 @@ export default function Country({country}) {
             {countryData?.languages.map((language) => language.name).join(", ")}
           </li>
         </ul>
-        <div>Border Countries: {borderData && borderData.join(", ")}</div>
+        <div>Border Countries: {
+            typeof borderData == "undefined" ? <p>Loading...</p> : borderData.map(border => {
+              return (
+                <Link
+                  key={border.alpha3Code}
+                  to={{
+                   pathname: `/${border.region}/${border.alpha3Code}`
+                  }}
+                  className="border-link"
+                >
+                  {border.name}
+                </Link>
+                );
+            })
+          }
+        </div>
       </div>
     </div>
   );

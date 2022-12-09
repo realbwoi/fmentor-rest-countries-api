@@ -4,12 +4,12 @@ import { Link } from 'react-router-dom';
 export default function Card({
   country
 }) {
-  const { name, flags, population, region, capital } = country;
+  const { name, flags, population, region, capital, alpha3Code } = country;
 
   return (
     <Link
       to={{
-        pathname: `/${region}/${name}`
+        pathname: `/${region}/${alpha3Code}`,
       }}
     >
       <img src={flags.svg} alt={`Country flag of ${name}`} />
