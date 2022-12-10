@@ -11,21 +11,26 @@ export default function Card({
       to={{
         pathname: `/${region}/${alpha3Code}`,
       }}
+      className="card"
     >
-      <img src={flags.svg} alt={`Country flag of ${name}`} />
-      <h2>{name}</h2>
-      <p>
-        <span>Population: </span>
-        {population}
-      </p>
-      <p>
-        <span>Region: </span>
-        {region}
-      </p>
-      <p>
-        <span>Capital: </span>
-        {capital}
-      </p>
+      <div className='card-img'>
+        <img src={flags.svg} alt={`Country flag of ${name}`} />
+      </div>
+      <div className="card-content">
+        <h2>{name}</h2>
+        <p>
+          <span>Population: </span>
+          {population}
+        </p>
+        <p>
+          <span>Region: </span>
+          {region}
+        </p>
+        <p>
+          <span>Capital: </span>
+          {capital}
+        </p>
+      </div>
     </Link>
   );
 }
