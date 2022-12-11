@@ -10,6 +10,10 @@ export default function Country({country}) {
     if (Object.keys(country).length === 0) {
       return;
     } else {
+      if (typeof country.borders === "undefined") {
+        setBorderData([]);
+        return;
+      }
       fetch(`https://restcountries.com/v2/alpha?codes=${country.borders.join(",")}`)
         .then(response => response.json())
         .then(data => {
@@ -71,22 +75,26 @@ export default function Country({country}) {
             {countryData?.languages.map((language) => language.name).join(", ")}
           </li>
         </ul>
-        <div>Border Countries: {
-            typeof borderData == "undefined" ? <p>Loading...</p> : borderData.map(border => {
-              return (
-                <Link
-                  key={border.alpha3Code}
-                  to={{
-                   pathname: `/${border.region}/${border.alpha3Code}`
-                  }}
-                  className="border-link"
-                >
-                  {border.name}
-                </Link>
-                );
-            })
-          }
-        </div>
+        {
+          typeof borderData == "undefined" || borderData.length === 0 ?
+          "" :
+          <div>Border Countries: {
+              typeof borderData == "undefined" ? <p>Loading...</p> : borderData.map(border => {
+                return (
+                  <Link
+                    key={border.alpha3Code}
+                    to={{
+                    pathname: `/${border.region}/${border.alpha3Code}`
+                    }}
+                    className="border-link"
+                  >
+                    {border.name}
+                  </Link>
+                  );
+              })
+            }
+          </div>
+        }
       </div>
     </div>
   );

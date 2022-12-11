@@ -1,5 +1,6 @@
 * {
   font-size: 14px;
+  box-sizing: border-box;
 }
 
 .border-link {
@@ -14,17 +15,22 @@ header {
   margin: 0 auto;
 }
 
-main {
+.search-wrapper {
   background-color: hsl(0, 0%, 98%);
   padding: 48px;
+  max-width: 100%;
 }
 
-.search-wrapper {
+.search-inner-wrapper {
   display: flex;
   justify-content: space-between;
   align-items: center;
   max-width: 1440px;
   margin: 0 auto;
+}
+
+.search-error {
+  background-color: #fff;
 }
 
 .cards-wrapper {
