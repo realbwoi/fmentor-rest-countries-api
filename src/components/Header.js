@@ -6,13 +6,15 @@ import { Link } from 'react-router-dom';
 export default function Header() {
   return (
     <header role="banner">
-      <Link to='/'>
-        <h1>Where in the world?</h1>
-      </Link>
-      <div>
-        <FontAwesomeIcon icon={faMoon} />
-        {/* Change to conditional statement */}
-        <span>Dark Mode</span>
+      <div className='header-wrapper'>
+        <Link to='/'>
+          <h1>Where in the world?</h1>
+        </Link>
+        <div>
+          <FontAwesomeIcon icon={faMoon} />
+          {/* Change to conditional statement */}
+          <span>Dark Mode</span>
+        </div>
       </div>
     </header>
   )
